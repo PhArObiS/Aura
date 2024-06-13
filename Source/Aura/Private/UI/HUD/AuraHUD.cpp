@@ -5,8 +5,6 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 
-#include "AbilitySystemComponent.h"
-#include "UI/Widget/AuraUserWidget.h"
 
 UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
