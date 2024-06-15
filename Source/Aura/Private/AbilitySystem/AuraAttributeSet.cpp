@@ -12,8 +12,7 @@
 // Constructor implementation, initializing default values for attributes.
 UAuraAttributeSet::UAuraAttributeSet()
 {
-    InitHealth(10.f);
-    InitMana(10.f);
+    
 }
 
 // Function to define which properties should be replicated.
