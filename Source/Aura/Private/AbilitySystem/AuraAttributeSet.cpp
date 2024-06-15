@@ -13,9 +13,7 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
     InitHealth(10.f);
-    InitMaxHealth(100.f);
     InitMana(10.f);
-    InitMaxMana(50.f);
 }
 
 // Function to define which properties should be replicated.
@@ -50,11 +48,11 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
     // Clamp Health and Mana to their respective maximum values.
     if (Attribute == GetHealthAttribute())
     {
-        // NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
     }
     if (Attribute == GetManaAttribute())
     {
-        // NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
     }
 }
 
@@ -102,12 +100,12 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
         GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Yellow, FString::Printf(TEXT("Health: %f"), GetHealth()));
-        // SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+        SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
     }
     if (Data.EvaluatedData.Attribute == GetManaAttribute())
     {
         GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Cyan, FString::Printf(TEXT("Mana: %f"), GetMana()));
-        // SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+        SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
 }
 
