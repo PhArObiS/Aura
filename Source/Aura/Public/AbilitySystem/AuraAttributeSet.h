@@ -13,6 +13,7 @@
     GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
     GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+
 // A struct to store properties related to gameplay effects.
 USTRUCT()
 struct FEffectProperties
@@ -50,6 +51,11 @@ struct FEffectProperties
     ACharacter* TargetCharacter = nullptr;
 };
 
+// typedef is specific to the FGameplayAttribute() signature, but TStaticFunPtr is generic to any signature chosen
+// typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributesFuncPtr;
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 /**
  * UAuraAttributeSet class - defines attributes for the Aura game.
  */
@@ -70,6 +76,8 @@ public:
     // Called after a gameplay effect is executed.
     virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
+	
     /*
      * Primary Attributes
     */
