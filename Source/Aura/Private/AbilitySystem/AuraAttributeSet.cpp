@@ -13,6 +13,12 @@
 // Constructor implementation, initializing default values for attributes.
 UAuraAttributeSet::UAuraAttributeSet()
 {
+    // Ensure MaxHealth is set before Health
+    // MaxHealth.SetCurrentValue(100.f);
+    // MaxHealth.SetBaseValue(100.f);
+    // Health.SetCurrentValue(100.f);
+    // Health.SetBaseValue(100.f);
+    
     const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
 
     /* Primary Attributes */
@@ -39,6 +45,9 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+    DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
+    DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Strength, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Resilience, COND_None, REPNOTIFY_Always);
@@ -55,8 +64,6 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
     DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
     
-    DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);
-    DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 }
 
 // Called before an attribute's value is changed.
@@ -117,12 +124,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
     if (Data.EvaluatedData.Attribute == GetHealthAttribute())
     {
-        GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Yellow, FString::Printf(TEXT("Health: %f"), GetHealth()));
         SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+        UE_LOG(LogTemp, Warning, TEXT("Changed Health on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
     }
     if (Data.EvaluatedData.Attribute == GetManaAttribute())
     {
-        GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Cyan, FString::Printf(TEXT("Mana: %f"), GetMana()));
         SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
     }
 }
