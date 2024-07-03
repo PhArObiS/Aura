@@ -158,19 +158,19 @@ public:
     // Generates boilerplate code for ManaRegeneration attribute.
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 
+	// MaxHealth attribute, replicated with a notification function.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
+
+	// MaxMana attribute, replicated with a notification function.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
+	
     /*
      * Vital Attributes
     */
-
-    // MaxHealth attribute, replicated with a notification function.
-    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
-    FGameplayAttributeData MaxHealth;
-    ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
-
-    // MaxMana attribute, replicated with a notification function.
-    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
-    FGameplayAttributeData MaxMana;
-    ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 
     // Health attribute, replicated with a notification function.
     UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
@@ -182,6 +182,14 @@ public:
     UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
     FGameplayAttributeData Mana;
     ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
+
+	/*
+	 * Meta Attributes
+	*/
+
+	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
     // Notification functions called when attributes are replicated.
     UFUNCTION()
