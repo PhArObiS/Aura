@@ -242,7 +242,7 @@ public:
     
 
 private:
-    // Helper function to set effect properties based on the callback data.
     void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
+	void ShowFloatingText(const FEffectProperties& Props, float Damage) const;
 };
  
