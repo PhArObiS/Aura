@@ -10,8 +10,8 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraEnemy.generated.h"
 
-class UWidgetComponent;
 class UBehaviorTree;
+class UWidgetComponent;
 class AAuraAIController;
 /**
  * 

@@ -20,6 +20,7 @@ public:
 
 protected:
 
+	
 	UPROPERTY()
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
 };
