@@ -97,7 +97,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
         return;
     }
 
-    if (GetASC()) GetASC()->AbilityInputTagHeld(InputTag);
+    if (GetASC()) GetASC()->AbilityInputTagReleased(InputTag);
 
     if (!bTargeting && !bShiftKeyDown)
     {
@@ -180,18 +180,6 @@ void AAuraPlayerController::BeginPlay()
     SetInputMode(InputModeData);
 }
 
-// Sets up player input bindings
-void AAuraPlayerController::SetupInputComponent()
-{
-    Super::SetupInputComponent();
-
-    UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
-    AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
-    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
-    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
-    AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
-}
-
 // Handles player movement input
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
@@ -207,4 +195,16 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
         ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
         ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
     }
+}
+
+// Sets up player input bindings
+void AAuraPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+
+    UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
+    AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+    AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
+    AuraInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
