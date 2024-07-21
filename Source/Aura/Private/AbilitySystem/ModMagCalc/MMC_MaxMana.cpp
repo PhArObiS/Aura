@@ -38,8 +38,12 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	Int = FMath::Max<float>(Int, 0.f);
 
 	// Get the combat interface from the source object to access player level
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
+	int32 PlayerLevel = 1;
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetPlayerLevel(Spec.GetContext().GetSourceObject());
+	}
+	
 
 	// Calculate the base magnitude using the formula: 80 + 2.5 * Intelligence + PlayerLevel
 	return 80.f + 2.5f * Int + 15.f * PlayerLevel;
