@@ -10,10 +10,8 @@
 #include "GameplayEffectExtension.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
-#include "Aura/AuraLogChannels.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
 
 // Constructor implementation, initializing default values for attributes.
@@ -98,10 +96,10 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 // Helper function to set effect properties based on the callback data.
 void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
-    // Source = causer of the effect, Target = target of the effect (owner of this AS)
+
     Props.EffectContextHandle = Data.EffectSpec.GetContext();
     Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
-   
+
     if (IsValid(Props.SourceASC) && Props.SourceASC->AbilityActorInfo.IsValid() && Props.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
     {
         Props.SourceAvatarActor = Props.SourceASC->AbilityActorInfo->AvatarActor.Get();
@@ -113,6 +111,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
                 Props.SourceController = Pawn->GetController();
             }
         }
+        
         if (Props.SourceController)
         {
             Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
@@ -127,6 +126,7 @@ void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
         }
     }
 }
+
 
 // Called after a gameplay effect is executed.
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
@@ -162,7 +162,6 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
                     CombatInterface->Die();
                 }
                 SendXPEvent(Props);
-                
             }
             else
             {
@@ -181,27 +180,23 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
         const float LocalIncomingXP = GetIncomingXP();
         SetIncomingXP(0.f);
 
-        // Source character is the owner, since GA_ListenForEvents applies GE_EventBasedEffect, adding to IncomingXP
         if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
         {
             const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
             const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
 
-            const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXPint32(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
-            const int32 NumLevelUps = NewLevel - CurrentXP;
+            const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+            const int32 NumLevelUps = NewLevel - CurrentLevel;
             if (NumLevelUps > 0)
             {
-                const int32 AttributePointsReward = IPlayerInterface ::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
+                const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
                 const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
 
                 IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
                 IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
                 IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
-
-                SetHealth(GetMaxHealth());
-                SetMana(GetMaxMana());
-                
-                IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+                bTopOffHealth = true;
+                bTopOffMana = true;
             }
             
             IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
@@ -209,8 +204,29 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
     }
 }
 
+
+
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+    Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+    if (Attribute == GetMaxHealthAttribute() && bTopOffHealth)
+    {
+        SetHealth(GetMaxHealth());
+        bTopOffHealth = false;
+    }
+    if (Attribute == GetMaxManaAttribute() && bTopOffMana)
+    {
+        SetMana(GetMaxMana());
+        bTopOffMana = false;
+    }
+}
+
+
+
 void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 {
+
     if (Props.TargetCharacter->Implements<UCombatInterface>())
     {
         const int32 TargetLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);
@@ -222,7 +238,6 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
         Payload.EventTag = GameplayTags.Attributes_Meta_IncomingXP;
         Payload.EventMagnitude = XPReward;
         UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Payload);
-        
     }
 }
 

@@ -8,8 +8,6 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/Widget/AuraUserWidget.h"
-#include "UI/WidgetController/OverlayWidgetController.h"
 
 struct FAuraGameplayTags;
 

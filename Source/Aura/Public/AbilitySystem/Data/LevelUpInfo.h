@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "LevelUpInfo.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FAuraLevelUpInfo
 {
 	GENERATED_BODY()

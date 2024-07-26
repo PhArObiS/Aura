@@ -25,7 +25,7 @@ AAuraEnemy::AAuraEnemy()
     bUseControllerRotationYaw = false;
     GetCharacterMovement()->bUseControllerDesiredRotation = true;
     
-    AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("Attributes");
+    AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 
     HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
     HealthBar->SetupAttachment(GetRootComponent());
@@ -123,19 +123,19 @@ void AAuraEnemy::BeginPlay()
         AuraUserWidget->SetWidgetController(this);
     }
 
-    if (HasAuthority())
-    {
-        // Instant gameplay effect to initialize attributes
-        TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
-        FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-        EffectContext.AddSourceObject(this);
-
-        FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
-        if (SpecHandle.IsValid())
-        {
-            FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-        }
-    }
+    // if (HasAuthority())
+    // {
+    //     // Instant gameplay effect to initialize attributes
+    //     TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
+    //     FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+    //     EffectContext.AddSourceObject(this);
+    //
+    //     FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
+    //     if (SpecHandle.IsValid())
+    //     {
+    //         FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+    //     }
+    // }
     
     InitializeHealth();
 }

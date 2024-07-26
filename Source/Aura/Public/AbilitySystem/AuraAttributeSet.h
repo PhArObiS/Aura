@@ -64,17 +64,12 @@ class AURA_API UAuraAttributeSet : public UAttributeSet
 {
     GENERATED_BODY()
 public:
-    // Constructor to initialize default values for the attributes.
     UAuraAttributeSet();
-    
-    // Function to define which properties should be replicated.
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-    // Called before an attribute's value is changed.
     virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
-    
-    // Called after a gameplay effect is executed.
     virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 	
@@ -281,5 +276,8 @@ private:
     void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;
 	void SendXPEvent(const FEffectProperties& Props);
+	bool bTopOffHealth = false;
+	bool bTopOffMana = false;
+	
 };
  
