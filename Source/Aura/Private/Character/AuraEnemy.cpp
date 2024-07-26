@@ -116,26 +116,23 @@ void AAuraEnemy::BeginPlay()
     if (HasAuthority())
     {
         UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
+
+        // Instant gameplay effect to initialize attributes Fix of Clients starting Health
+        TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
+        FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+        EffectContext.AddSourceObject(this);
+        
+        FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
+        if (SpecHandle.IsValid())
+        {
+            FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+        }
     }
 
     if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
     {
         AuraUserWidget->SetWidgetController(this);
     }
-
-    // if (HasAuthority())
-    // {
-    //     // Instant gameplay effect to initialize attributes
-    //     TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
-    //     FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-    //     EffectContext.AddSourceObject(this);
-    //
-    //     FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
-    //     if (SpecHandle.IsValid())
-    //     {
-    //         FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-    //     }
-    // }
     
     InitializeHealth();
 }
