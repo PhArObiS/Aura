@@ -33,6 +33,7 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 	
 	void InitializeHealth();
+	void EnemyHealthInitialize();
 	/** End Combat Interface */
 
 	UPROPERTY(BlueprintAssignable)
