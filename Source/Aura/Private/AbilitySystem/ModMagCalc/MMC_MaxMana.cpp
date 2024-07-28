@@ -6,6 +6,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Interaction/CombatInterface.h"
 
+
 UMMC_MaxMana::UMMC_MaxMana()
 {
 	// Define which attribute to capture (IntDef)

@@ -14,6 +14,8 @@
 #include "Interaction/PlayerInterface.h"
 #include "Player/AuraPlayerController.h"
 
+
+
 // Constructor implementation, initializing default values for attributes.
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -195,6 +197,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
                 IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
                 IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
                 IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+                
                 bTopOffHealth = true;
                 bTopOffMana = true;
             }
@@ -226,7 +229,6 @@ void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute,
 
 void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 {
-
     if (Props.TargetCharacter->Implements<UCombatInterface>())
     {
         const int32 TargetLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);

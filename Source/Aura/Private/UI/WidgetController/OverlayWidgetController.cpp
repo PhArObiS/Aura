@@ -10,6 +10,7 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 
 
+
 void UOverlayWidgetController::BroadcastInitialValues()
 {
     OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());
@@ -88,7 +89,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 {
-	const ULevelUpInfo* LevelUpInfo = GetAuraPS()->LevelUpInfo;
+	const ULevelUpInfo* LevelUpInfo = GetAuraPS()->LevelUpInfo; 
 	checkf(LevelUpInfo, TEXT("Unable to find LevelUpInfo. Please fill out AuraPlayerState Blueprint"));
 
 	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
@@ -104,7 +105,6 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 
 		const float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
 
-		UE_LOG(LogTemp, Warning, TEXT("XP Changed: %d, Level: %d, XP Bar Percent: %f"), NewXP, Level, XPBarPercent);
 		OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
 	}
 	else

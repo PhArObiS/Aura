@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "GameplayTagContainer.h"
-#include "AbilitySystem/Data/AbilityInfo.h"
 #include "OverlayWidgetController.generated.h"
+
 
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public FTableRowBase

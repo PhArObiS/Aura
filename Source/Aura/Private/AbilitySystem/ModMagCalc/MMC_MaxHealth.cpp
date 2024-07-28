@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Interaction/CombatInterface.h"
 
+
 // Constructor implementation
 UMMC_MaxHealth::UMMC_MaxHealth()
 {
