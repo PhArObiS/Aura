@@ -200,6 +200,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
                 
                 bTopOffHealth = true;
                 bTopOffMana = true;
+
+                IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
             }
             
             IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
