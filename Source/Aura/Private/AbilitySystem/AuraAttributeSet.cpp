@@ -215,7 +215,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
     const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);
     const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);
     const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);
-    
+
     FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *DamageType.ToString());
     UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
 
@@ -223,13 +223,14 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
     Effect->Period = DebuffFrequency;
     Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-    // Effect->InheritableOwnedTagsContainer.AddTag(GaemplayTags.DamageTypesToDebuffs[DamageType]);
+    // Effect->InheritableOwnedTagsContainer.AddTag(GamplayTags.DamageTypesToDebuffs[DamageType]);
     // Replaced this with what's under because depreciated **************************************
-    UTargetTagsGameplayEffectComponent& AssetTagsComponent =  Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+    UTargetTagsGameplayEffectComponent& AssetTagsComponent = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
     FInheritedTagContainer InheritedTagContainer;
     InheritedTagContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
     AssetTagsComponent.SetAndApplyTargetTagChanges(InheritedTagContainer);
     // ******************************************************************************************
+    
     
     Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
     Effect->StackLimitCount = 1;
@@ -241,7 +242,7 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
     ModifierInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);
     ModifierInfo.ModifierOp = EGameplayModOp::Additive;
     ModifierInfo.Attribute = UAuraAttributeSet::GetIncomingDamageAttribute();
-
+	
     if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.f))
     {
         FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
@@ -250,7 +251,6 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 
         Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
     }
-    
 }
 
 void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)

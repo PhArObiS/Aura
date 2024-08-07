@@ -10,7 +10,7 @@ struct FDamageEffectParams
 {
 	GENERATED_BODY()
 
-	FDamageEffectParams() {}
+	FDamageEffectParams(){}
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UObject> WorldContextObject = nullptr;
@@ -53,7 +53,7 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	float KnockbackForceMagnitude = 0.f;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 	float KnockbackChance = 0.f;
 
@@ -69,8 +69,8 @@ struct FAuraGameplayEffectContext : public FGameplayEffectContext
 public:
 
 	bool IsCriticalHit() const { return bIsCriticalHit; }
-	bool IsBlockedHit() const { return bIsBlockedHit; }
-	bool IsSuccessfulDebuff()  const { return bIsSuccessfulDebuff; }
+	bool IsBlockedHit () const { return bIsBlockedHit; }
+	bool IsSuccessfulDebuff() const { return bIsSuccessfulDebuff; }
 	float GetDebuffDamage() const { return DebuffDamage; }
 	float GetDebuffDuration() const { return DebuffDuration; }
 	float GetDebuffFrequency() const { return DebuffFrequency; }
@@ -85,7 +85,7 @@ public:
 	void SetDebuffDuration(float InDuration) { DebuffDuration = InDuration; }
 	void SetDebuffFrequency(float InFrequency) { DebuffFrequency = InFrequency; }
 	void SetDamageType(TSharedPtr<FGameplayTag> InDamageType) { DamageType = InDamageType; }
-	void SetDeathImpulse(const FVector& InImpulse) { DeathImpulse = InImpulse;}
+	void SetDeathImpulse(const FVector& InImpulse) { DeathImpulse = InImpulse; }
 	void SetKnockbackForce(const FVector& InForce) { KnockbackForce = InForce; }
 
 	/** returns the actual struct used for serialization, subclasses must override this! */
