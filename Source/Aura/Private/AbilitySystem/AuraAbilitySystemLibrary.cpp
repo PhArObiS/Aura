@@ -329,6 +329,86 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+{
+	if (Actors.Num() <= MaxTargets)
+	{
+		OutClosestTargets = Actors;
+		return;
+	}
+
+	TArray<AActor*> ActorsToCheck = Actors;
+	int32 NumTargetsFound = 0;
+
+	while (NumTargetsFound < MaxTargets)
+	{
+		if (ActorsToCheck.Num() == 0) break;
+		double ClosestDistance = TNumericLimits<double>::Max();
+		AActor* ClosestActor;
+		for (AActor* PotentialTarget : ActorsToCheck)
+		{
+			const double Distance = (PotentialTarget->GetActorLocation() - Origin).Length();
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				ClosestActor = PotentialTarget;
+			}
+		}
+		ActorsToCheck.Remove(ClosestActor);
+		OutClosestTargets.AddUnique(ClosestActor);
+		++NumTargetsFound;
+	}
+}
+
+// #include "Containers/Queue.h" // Replaces obove function 
+//
+// void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+// {
+// 	if (Actors.Num() <= MaxTargets)
+// 	{
+// 		OutClosestTargets = Actors;
+// 		return;
+// 	}
+//
+// 	struct FActorDistance
+// 	{
+// 		AActor* Actor;
+// 		double DistanceSquared;
+//
+// 		FActorDistance(AActor* InActor, double InDistanceSquared)
+// 			: Actor(InActor), DistanceSquared(InDistanceSquared) {}
+//
+// 		bool operator>(const FActorDistance& Other) const
+// 		{
+// 			return DistanceSquared > Other.DistanceSquared;
+// 		}
+// 	};
+//
+// 	TArray<FActorDistance> ActorDistances;
+// 	ActorDistances.Reserve(Actors.Num());
+//
+// 	// Calculate distances
+// 	for (AActor* Actor : Actors)
+// 	{
+// 		if (Actor)
+// 		{
+// 			double DistanceSquared = (Actor->GetActorLocation() - Origin).SizeSquared();
+// 			ActorDistances.Emplace(Actor, DistanceSquared);
+// 		}
+// 	}
+//
+// 	// Use heap to find the closest targets
+// 	ActorDistances.Heapify();
+// 	OutClosestTargets.Reserve(MaxTargets);
+//
+// 	for (int32 i = 0; i < MaxTargets && ActorDistances.Num() > 0; ++i)
+// 	{
+// 		FActorDistance Closest;
+// 		ActorDistances.HeapPop(Closest, false);
+// 		OutClosestTargets.Add(Closest.Actor);
+// 	}
+// }
+
 bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondActor)
 {
 	const bool bBothArePlayers = FirstActor->ActorHasTag(FName("Player")) && SecondActor->ActorHasTag(FName("Player"));
