@@ -184,11 +184,14 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
         }
         else
         {
-            FGameplayTagContainer TagContainer;
-            TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-            Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeingShocked(Props.TargetCharacter))
+            {
+                FGameplayTagContainer TagContainer;
+                TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+                Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+            }
 
-            const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockbackForce((Props.EffectContextHandle));
+            const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockbackForce(Props.EffectContextHandle);
             if (!KnockbackForce.IsNearlyZero(1.f))
             {
                 Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
@@ -223,14 +226,24 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
     Effect->Period = DebuffFrequency;
     Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
+    const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
     // Effect->InheritableOwnedTagsContainer.AddTag(GamplayTags.DamageTypesToDebuffs[DamageType]);
     // Replaced this with what's under because depreciated **************************************
     UTargetTagsGameplayEffectComponent& AssetTagsComponent = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
     FInheritedTagContainer InheritedTagContainer;
     InheritedTagContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
-    AssetTagsComponent.SetAndApplyTargetTagChanges(InheritedTagContainer);
     // ******************************************************************************************
-    
+    // Check if the debuff tag matches the stun tag
+    if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
+    {
+        // Add the relevant player block tags to the InheritedTagContainer
+        InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
+        InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
+        InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
+        InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
+    }
+    // Apply the changes to the target tags component
+    AssetTagsComponent.SetAndApplyTargetTagChanges(InheritedTagContainer);
     
     Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
     Effect->StackLimitCount = 1;

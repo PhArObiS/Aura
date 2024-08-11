@@ -38,13 +38,15 @@ public:
 	virtual int32 GetSpellPoints_Implementation() const override;
 	/** Player Interface */
 	
-	
 	/** Combat Interface */
 	virtual int32 GetPlayerLevel_Implementation() override;
 	/** End Combat Interface */
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
+
+	virtual void OnRep_Stunned() override;
+	virtual void OnRep_Burned() override;
 private:
 
 	UPROPERTY(VisibleAnywhere)
