@@ -128,6 +128,12 @@ void AAuraEnemy::BeginPlay()
     Super::BeginPlay();
     GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
     InitAbilityActorInfo();
+    if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
+    {
+        AuraUserWidget->SetWidgetController(this);
+    }
+    
+    InitializeHealth();
     if (HasAuthority())
     {
         UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
@@ -136,12 +142,6 @@ void AAuraEnemy::BeginPlay()
         EnemyHealthInitialize(); 
     }
 
-    if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
-    {
-        AuraUserWidget->SetWidgetController(this);
-    }
-    
-    InitializeHealth();
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)

@@ -10,7 +10,6 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "AuraGameplayTags.h"
-#include "NativeGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
@@ -165,10 +164,14 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 {
     const float LocalIncomingDamage = GetIncomingDamage();
+    UE_LOG(LogTemp, Warning, TEXT("Incoming Damage: %f"), LocalIncomingDamage);
+
     SetIncomingDamage(0.f);
     if (LocalIncomingDamage > 0.f)
     {
         const float NewHealth = GetHealth() - LocalIncomingDamage;
+        UE_LOG(LogTemp, Warning, TEXT("New Health after damage: %f"), NewHealth);
+
         SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
         const bool bFatal = NewHealth <= 0.f;
@@ -208,6 +211,7 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
     }
 }
 
+
 void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 {
     const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
@@ -226,24 +230,37 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
     Effect->Period = DebuffFrequency;
     Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-    const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
     // Effect->InheritableOwnedTagsContainer.AddTag(GamplayTags.DamageTypesToDebuffs[DamageType]);
+    // const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
+    // Effect->InheritableOwnedTagsContainer.AddTag(DebuffTag);
+    // if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
+    // {
+    //     // Add the relevant player block tags to the InheritedTagContainer
+    //     Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
+    //     Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
+    //     Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
+    //     Effect->InheritableOwnedTagsContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
+    // }
     // Replaced this with what's under because depreciated **************************************
+    const FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
     UTargetTagsGameplayEffectComponent& AssetTagsComponent = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
     FInheritedTagContainer InheritedTagContainer;
-    InheritedTagContainer.Added.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
-    // ******************************************************************************************
-    // Check if the debuff tag matches the stun tag
+
+    // Add the debuff tag
+    InheritedTagContainer.Added.AddTag(DebuffTag);
+
     if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
     {
-        // Add the relevant player block tags to the InheritedTagContainer
+        // Add the relevant player block tags
         InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_CursorTrace);
         InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputHeld);
         InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputPressed);
         InheritedTagContainer.Added.AddTag(GameplayTags.Player_Block_InputReleased);
     }
-    // Apply the changes to the target tags component
+
+    // Apply the tag changes
     AssetTagsComponent.SetAndApplyTargetTagChanges(InheritedTagContainer);
+
     
     Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
     Effect->StackLimitCount = 1;
@@ -280,10 +297,17 @@ void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
         const int32 NumLevelUps = NewLevel - CurrentLevel;
         if (NumLevelUps > 0)
         {
-            const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
-            const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
-
             IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
+
+            int32 AttributePointsReward = 0;
+            int32 SpellPointsReward = 0;
+            
+            for (int32 i = 0; i < NumLevelUps; ++i)
+            {
+                SpellPointsReward += IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel + i);
+                AttributePointsReward += IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel + i);
+            }
+            
             IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
             IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
                 

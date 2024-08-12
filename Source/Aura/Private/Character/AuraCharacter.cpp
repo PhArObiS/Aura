@@ -214,5 +214,5 @@ void AAuraCharacter::InitAbilityActorInfo()
     }
     InitializeDefaultAttributes();
     
-    // UE_LOG(LogTemp, Warning, TEXT("Ability actor info initialized"));
+    UE_LOG(LogTemp, Warning, TEXT("Ability actor info initialized"));
 }
