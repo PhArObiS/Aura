@@ -47,5 +47,6 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	
 
 	// Calculate the base magnitude using the formula: 80 + 2.5 * Intelligence + PlayerLevel
-	return 80.f + 2.5f * Int + 15.f * PlayerLevel;
+	return 50.f + 2.5f * Int + 15.f * PlayerLevel;
+
 }
