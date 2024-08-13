@@ -15,8 +15,17 @@
 struct FAuraGameplayTags
 {
 public:
+	
     // Returns the singleton instance of FAuraGameplayTags.
-    static const FAuraGameplayTags& Get() { return GameplayTags; }
+	// Singleton accessor
+	static const FAuraGameplayTags& Get()
+	{
+		if(!GameplayTags.bInitialized)
+		{
+			InitializeNativeGameplayTags();
+		}
+		return GameplayTags;
+	}
 
     // Initializes native gameplay tags.
     static void InitializeNativeGameplayTags();
@@ -96,6 +105,8 @@ public:
     // Specific Abilities
     FGameplayTag Abilities_Fire_FireBolt;
     FGameplayTag Abilities_Lightning_Electrocute;
+	FGameplayTag Abilities_Arcane_ArcaneShards;
+	
     FGameplayTag Abilities_Passive_HaloOfProtection;
     FGameplayTag Abilities_Passive_LifeSiphon;
     FGameplayTag Abilities_Passive_ManaSiphon;
@@ -129,6 +140,7 @@ public:
     TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
 
 private:
-    // Singleton instance of FAuraGameplayTags.
-    static FAuraGameplayTags GameplayTags; 
+	// Singleton instance and initialization flag
+	static FAuraGameplayTags GameplayTags;
+	bool bInitialized = false;
 };

@@ -110,39 +110,50 @@ void AAuraEnemy::InitializeHealth()
     }
 }
 
-void AAuraEnemy::EnemyHealthInitialize()
-{
-    TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
-    FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-    EffectContext.AddSourceObject(this);
-        
-    FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
-    if (SpecHandle.IsValid())
-    {
-        FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-    }
-}
+// void AAuraEnemy::EnemyHealthInitialize()
+// {
+//     TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
+//     FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+//     EffectContext.AddSourceObject(this);
+//         
+//     FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
+//     if (SpecHandle.IsValid())
+//     {
+//         FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+//         UE_LOG(LogTemp, Warning, TEXT("Applied Gameplay Effect for Attribute Initialization with handle: %s"), *EffectHandle.ToString());
+//     }
+//     else
+//     {
+//         UE_LOG(LogTemp, Error, TEXT("Failed to create a valid GameplayEffectSpecHandle"));
+//     }
+// }
+
 
 void AAuraEnemy::BeginPlay()
 {
     Super::BeginPlay();
     GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
     InitAbilityActorInfo();
+    if (HasAuthority())
+    {
+        UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);	
+    }
+
     if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
     {
         AuraUserWidget->SetWidgetController(this);
     }
-    
-    InitializeHealth();
-    if (HasAuthority())
-    {
-        UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
-        
-        // Instant gameplay effect to initialize attributes Fix of Clients starting Health
-        EnemyHealthInitialize(); 
-    }
 
+    
+    // InitializeHealth(); // Should come after InitAbilityActorInfo
+    //
+    // if (HasAuthority())
+    // {
+    //     // Ensure attributes are initialized after giving startup abilities
+    //     EnemyHealthInitialize();
+    // }
 }
+
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
@@ -169,8 +180,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 void AAuraEnemy::InitializeDefaultAttributes() const
 {
+    UE_LOG(LogTemp, Warning, TEXT("Initializing default attributes for CharacterClass: %d, Level: %d"), CharacterClass, Level);
     UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
+
 
 void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {

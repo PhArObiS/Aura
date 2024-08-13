@@ -7,6 +7,12 @@ FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
+    // Ensure this method only initializes once
+    if (GameplayTags.bInitialized)
+    {
+        return;
+    }
+    
     /*
      * Primary Attributes
      */
@@ -305,6 +311,16 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
         FString("Electrocute Ability")
     );
 
+    GameplayTags.Abilities_Arcane_ArcaneShards = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Abilities.Arcane.ArcaneShards"),
+        FString("Arcane Shards Ability")
+    );
+
+    GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Abilities.Lightning.Electrocute"),
+        FString("Electrocute Ability")
+    );
+
     GameplayTags.Abilities_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Abilities.Passive.HaloOfProtection"),
         FString("Halo of Protection Passive Ability")
@@ -417,4 +433,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Lightning, GameplayTags.Debuff_Stun);
     GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Arcane, GameplayTags.Debuff_Arcane);
     GameplayTags.DamageTypesToDebuffs.Add(GameplayTags.Damage_Physical, GameplayTags.Debuff_Physical);
+
+    // After initialization, set the flag to true
+    GameplayTags.bInitialized = true;
 }
