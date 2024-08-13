@@ -59,6 +59,7 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	FVector KnockbackForce = FVector::ZeroVector;
+
 };
 
 USTRUCT(BlueprintType)
