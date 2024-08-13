@@ -13,7 +13,6 @@ UCLASS()
 class AURA_API UAuraFireBolt : public UAuraProjectileSpell
 {
 	GENERATED_BODY()
-
 public:
 	virtual FString GetDescription(int32 Level) override;
 	virtual FString GetNextLevelDescription(int32 Level) override;
@@ -27,7 +26,7 @@ protected:
 	float ProjectileSpread = 90.f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FireBolt")
-	int32 MaxNumProjectiles = 5.f;
+	int32 MaxNumProjectiles = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "FireBolt")
 	float HomingAccelerationMin = 1600.f;

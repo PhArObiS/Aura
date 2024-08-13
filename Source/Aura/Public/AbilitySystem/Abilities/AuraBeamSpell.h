@@ -31,7 +31,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void AdditionalTargetDied(AActor* DeadActor);
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
@@ -46,7 +45,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	TObjectPtr<ACharacter> OwnerCharacter;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	UPROPERTY(EditDefaultsOnly, Category = "Beam")
 	int32 MaxNumShockTargets = 5;
-	
 };
