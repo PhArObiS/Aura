@@ -306,6 +306,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
         FString("Fire Bolt Ability")
     );
 
+    GameplayTags.Abilities_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("Abilities.Fire.FireBlast"),
+        FString("Fire Blast Ability")
+    );
+
     GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Abilities.Lightning.Electrocute"),
         FString("Electrocute Ability")
@@ -419,6 +424,15 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
     GameplayTags.Player_Block_CursorTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(
         FName("Player.Block.CursorTrace"),
         FString("Cursor trace for block")
+    );
+
+    /*
+     *GameplayCues
+     */
+    
+    GameplayTags.GameplayCue_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+        FName("GameplayCue.FireBlast"),
+        FString("FireBlast GameplayCue Tag")
     );
 
     /*

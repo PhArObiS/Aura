@@ -104,6 +104,7 @@ public:
 
     // Specific Abilities
     FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag Abilities_Fire_FireBlast;
     FGameplayTag Abilities_Lightning_Electrocute;
 	FGameplayTag Abilities_Arcane_ArcaneShards;
 	
@@ -138,6 +139,8 @@ public:
     // Maps for Damage Types to Resistances and Debuffs
     TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
     TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
+
+	FGameplayTag GameplayCue_FireBlast;
 
 private:
 	// Singleton instance and initialization flag
