@@ -7,16 +7,24 @@
 #include "GameplayTagContainer.h"
 #include "AuraPlayerController.generated.h"
 
-class AMagicCircle;
+
+class IHighlightInterface;
 class UNiagaraSystem;
 class UDamageTextComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;
+class AMagicCircle;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting
+};
 
 /**
  * 
@@ -37,37 +45,39 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();
+
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 private:
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> MoveAction;
 
-	UPROPERTY(EditAnywhere, Category = "Input")
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> ShiftAction;
 
-	bool bShiftKeyDown = false;
 	void ShiftPressed() { bShiftKeyDown = true; };
 	void ShiftReleased() { bShiftKeyDown = false; };
-	
-	
-	void Move(const FInputActionValue& InputActionValue);
-	void CursorTrace();
-	FHitResult CursorHit;
+	bool bShiftKeyDown = false;
 
-	TScriptInterface<IEnemyInterface> LastActor;
-	TScriptInterface<IEnemyInterface> ThisActor;
+	void Move(const FInputActionValue& InputActionValue);
+
+	void CursorTrace();
+	TObjectPtr<AActor> LastActor;
+	TObjectPtr<AActor> ThisActor;
+	FHitResult CursorHit;
+	static void HighlightActor(AActor* InActor);
+	static void UnHighlightActor(AActor* InActor);
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
 	void AbilityInputTagHeld(FGameplayTag InputTag);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
 	UPROPERTY()
@@ -75,11 +85,12 @@ private:
 
 	UAuraAbilitySystemComponent* GetASC();
 
+	
 	FVector CachedDestination = FVector::ZeroVector;
 	float FollowTime = 0.f;
 	float ShortPressThreshold = 0.5f;
 	bool bAutoRunning = false;
-	bool bTargeting = false;
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;
@@ -89,7 +100,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
-	
+
 	void AutoRun();
 
 	UPROPERTY(EditDefaultsOnly)

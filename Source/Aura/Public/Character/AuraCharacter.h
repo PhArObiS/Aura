@@ -7,16 +7,14 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
-class UCameraComponent;
 class UNiagaraComponent;
+class UCameraComponent;
 class USpringArmComponent;
-
-
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface 
+class AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 public:
@@ -38,19 +36,27 @@ public:
 	virtual int32 GetSpellPoints_Implementation() const override;
 	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;
 	virtual void HideMagicCircle_Implementation() override;
-	/** Player Interface */
-	
+	virtual void SaveProgress_Implementation(const FName& CheckpointTag) override;
+	/** end Player Interface */
+
 	/** Combat Interface */
 	virtual int32 GetPlayerLevel_Implementation() override;
-	/** End Combat Interface */
+	virtual void Die(const FVector& DeathImpulse) override;
+	/** end Combat Interface */
+
+	UPROPERTY(EditDefaultsOnly)
+	float DeathTime = 5.f;
+
+	FTimerHandle DeathTimer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 
 	virtual void OnRep_Stunned() override;
 	virtual void OnRep_Burned() override;
-private:
 
+	void LoadProgress();
+private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;
 
@@ -61,6 +67,4 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastLevelUpParticles() const;
-
-
 };

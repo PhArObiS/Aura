@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+class ULoadScreenSaveGame;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /*AssetTags*/);
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
@@ -21,17 +22,17 @@ UCLASS()
 class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-
 public:
 	void AbilityActorInfoSet();
-	
+
 	FEffectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGivenDelegate;
 	FAbilityStatusChanged AbilityStatusChanged;
 	FAbilityEquipped AbilityEquipped;
 	FDeactivatePassiveAbility DeactivatePassiveAbility;
 	FActivatePassiveEffect ActivatePassiveEffect;
- 
+
+	void AddCharacterAbilitiesFromSaveData(ULoadScreenSaveGame* SaveData);
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupPassiveAbilities);
 	bool bStartupAbilitiesGiven = false;
@@ -44,8 +45,8 @@ public:
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
-	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);;
-	FGameplayTag GetSlotTagFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetSlotFromAbilityTag(const FGameplayTag& AbilityTag);
 	bool SlotIsEmpty(const FGameplayTag& Slot);
 	static bool AbilityHasSlot(const FGameplayAbilitySpec& Spec, const FGameplayTag& Slot);
 	static bool AbilityHasAnySlot(const FGameplayAbilitySpec& Spec);
@@ -55,9 +56,9 @@ public:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActivate);
-	
+
 	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
-	
+
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);
 
 	UFUNCTION(Server, Reliable)
@@ -65,10 +66,10 @@ public:
 
 	void UpdateAbilityStatuses(int32 Level);
 
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Server, Reliable)
 	void ServerSpendSpellPoint(const FGameplayTag& AbilityTag);
 
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(Server, Reliable)
 	void ServerEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& Slot);
 
 	UFUNCTION(Client, Reliable)
@@ -78,10 +79,9 @@ public:
 
 	static void ClearSlot(FGameplayAbilitySpec* Spec);
 	void ClearAbilitiesOfSlot(const FGameplayTag& Slot);
-	bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& Slot);
-	
-	
+	static bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& Slot);
 protected:
+
 	virtual void OnRep_ActivateAbilities() override;
 
 	UFUNCTION(Client, Reliable)
@@ -89,5 +89,4 @@ protected:
 
 	UFUNCTION(Client, Reliable)
 	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel);
-	
 };

@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-// Copyright Druid Mechanics
-
 #include "AbilitySystem/Abilities/Electrocute.h"
 
 FString UElectrocute::GetDescription(int32 Level)

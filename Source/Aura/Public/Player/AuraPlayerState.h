@@ -7,17 +7,19 @@
 #include "GameFramework/PlayerState.h"
 #include "AuraPlayerState.generated.h"
 
-class ULevelUpInfo;
+
 class UAbilitySystemComponent;
 class UAttributeSet;
+class ULevelUpInfo;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChanged, int32 /*StatValue*/)
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelChanged, int32 /*StatValue*/, bool /*bLevelUp*/)
 
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface	
+class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
@@ -30,7 +32,7 @@ public:
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
-	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnLevelChanged OnLevelChangedDelegate;
 	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStatChanged OnSpellPointsChangedDelegate;
 
@@ -41,34 +43,36 @@ public:
 
 	void AddToXP(int32 InXP);
 	void AddToLevel(int32 InLevel);
-	void AddToAttributePoints(int32 InPoints); 
+	void AddToAttributePoints(int32 InPoints);
 	void AddToSpellPoints(int32 InPoints);
 	
 	void SetXP(int32 InXP);
 	void SetLevel(int32 InLevel);
-	
-
+	void SetAttributePoints(int32 InPoints);
+	void SetSpellPoints(int32 InPoints);
 	
 protected:
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	
+
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 private:
+
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_Level)
 	int32 Level = 1;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_XP)
-	int32 XP = 1;
+	int32 XP = 0;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_AttributePoints)
 	int32 AttributePoints = 0;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing=OnRep_SpellPoints)
 	int32 SpellPoints = 0;
-
+	
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 

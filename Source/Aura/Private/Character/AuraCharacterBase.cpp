@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
@@ -13,20 +14,18 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
-
-struct FAuraGameplayTags;
-
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	
 	BurnDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");
 	BurnDebuffComponent->SetupAttachment(GetRootComponent());
-	BurnDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Burn;
+	BurnDebuffComponent->DebuffTag = GameplayTags.Debuff_Burn;
 
 	StunDebuffComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");
 	StunDebuffComponent->SetupAttachment(GetRootComponent());
-	StunDebuffComponent->DebuffTag = FAuraGameplayTags::Get().Debuff_Stun;
+	StunDebuffComponent->DebuffTag = GameplayTags.Debuff_Stun;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -47,6 +46,7 @@ AAuraCharacterBase::AAuraCharacterBase()
 	ManaSiphonNiagaraComponent = CreateDefaultSubobject<UPassiveNiagaraComponent>("ManaSiphonNiagaraComponent");
 	ManaSiphonNiagaraComponent->SetupAttachment(EffectAttachComponent);
 
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 }
 
 void AAuraCharacterBase::Tick(float DeltaTime)
@@ -64,10 +64,9 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShocked);
 }
 
-float AAuraCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+float AAuraCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float DamageTaken =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	const float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	OnDamageDelegate.Broadcast(DamageTaken);
 	return DamageTaken;
 }
@@ -101,13 +100,13 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	Weapon->AddImpulse(DeathImpulse * 0.1f, NAME_None, true);
-
+	
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	GetMesh()->AddImpulse(DeathImpulse, NAME_None, true);
-
+	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 	bDead = true;
@@ -157,7 +156,6 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 		return GetMesh()->GetSocketLocation(TailSocketName);
 	}
 	return FVector();
-	
 }
 
 bool AAuraCharacterBase::IsDead_Implementation() const
@@ -197,10 +195,10 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation()
 	return MinionCount;
 }
 
-void AAuraCharacterBase::IncrementMinionCount_Implementation(int32 Amount)
-{
-	MinionCount += Amount;
-}
+// void AAuraCharacterBase::IncremenetMinionCount_Implementation(int32 Amount)
+// {
+// 	MinionCount += Amount;
+// }
 
 ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 {
@@ -232,10 +230,8 @@ FOnDamageSignature& AAuraCharacterBase::GetOnDamageSignature()
 	return OnDamageDelegate;
 }
 
-
 void AAuraCharacterBase::InitAbilityActorInfo()
 {
-	
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
@@ -262,7 +258,6 @@ void AAuraCharacterBase::AddCharacterAbilities()
 
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
-	
 }
 
 void AAuraCharacterBase::Dissolve()

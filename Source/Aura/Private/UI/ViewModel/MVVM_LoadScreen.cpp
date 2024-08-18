@@ -21,6 +21,8 @@ void UMVVM_LoadScreen::InitializeLoadSlots()
 	LoadSlots.Add(2, LoadSlot_2);
 	LoadSlot_2->SetLoadSlotName(FString("LoadSlot_2"));
 	LoadSlot_2->SlotIndex = 2;
+
+	SetNumLoadSlots(LoadSlots.Num());
 }
 
 UMVVM_LoadSlot* UMVVM_LoadScreen::GetLoadSlotViewModelByIndex(int32 Index) const
@@ -36,23 +38,22 @@ void UMVVM_LoadScreen::NewSlotButtonPressed(int32 Slot, const FString& EnteredNa
 		GEngine->AddOnScreenDebugMessage(1, 15.f, FColor::Magenta, FString("Please switch to Single Player"));
 		return;
 	}
-	
+
 	LoadSlots[Slot]->SetMapName(AuraGameMode->DefaultMapName);
 	LoadSlots[Slot]->SetPlayerName(EnteredName);
-	// LoadSlots[Slot]->SetPlayerLevel(1);
+	LoadSlots[Slot]->SetPlayerLevel(1);
 	LoadSlots[Slot]->SlotStatus = Taken;
 	LoadSlots[Slot]->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
-	// LoadSlots[Slot]->MapAssetName = AuraGameMode->DefaultMap.ToSoftObjectPath().GetAssetName();
-	
+	LoadSlots[Slot]->MapAssetName = AuraGameMode->DefaultMap.ToSoftObjectPath().GetAssetName();
+
 	AuraGameMode->SaveSlotData(LoadSlots[Slot], Slot);
 	LoadSlots[Slot]->InitializeSlot();
-	
+
 	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(AuraGameMode->GetGameInstance());
 	AuraGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
 	AuraGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
 	AuraGameInstance->PlayerStartTag = AuraGameMode->DefaultPlayerStartTag;
 }
-
 
 void UMVVM_LoadScreen::NewGameButtonPressed(int32 Slot)
 {
@@ -118,7 +119,7 @@ void UMVVM_LoadScreen::LoadData()
 		
 		LoadSlot.Value->SetMapName(SaveObject->MapName);
 		LoadSlot.Value->PlayerStartTag = SaveObject->PlayerStartTag;
-		// LoadSlot.Value->SetPlayerLevel(SaveObject->PlayerLevel);
+		LoadSlot.Value->SetPlayerLevel(SaveObject->PlayerLevel);
 	}
 }
 
