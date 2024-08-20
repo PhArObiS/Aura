@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
@@ -195,10 +193,10 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation()
 	return MinionCount;
 }
 
-// void AAuraCharacterBase::IncremenetMinionCount_Implementation(int32 Amount)
-// {
-// 	MinionCount += Amount;
-// }
+void AAuraCharacterBase::IncrementMinionCount_Implementation(int32 Amount)
+{
+	MinionCount += Amount;
+}
 
 ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation()
 {

@@ -93,6 +93,24 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 	return CombatTarget;
 }
 
+// void AAuraEnemy::EnemyHealthInitialize() const
+// {
+// 	TSubclassOf<UGameplayEffect> InitAttributesEffect = UInitAttributes::StaticClass();
+// 	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+// 	EffectContext.AddSourceObject(this);
+//         
+// 	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(InitAttributesEffect, 1.f, EffectContext);
+// 	if (SpecHandle.IsValid())
+// 	{
+// 		FActiveGameplayEffectHandle EffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+// 		UE_LOG(LogTemp, Warning, TEXT("Applied Gameplay Effect for Attribute Initialization with handle: %s"), *EffectHandle.ToString());
+// 	}
+// 	else
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT("Failed to create a valid GameplayEffectSpecHandle"));
+// 	}
+// }
+
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -102,7 +120,6 @@ void AAuraEnemy::BeginPlay()
 	{
 		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);	
 	}
-
 	
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
@@ -132,6 +149,11 @@ void AAuraEnemy::BeginPlay()
 		OnHealthChanged.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());
 	}
+
+	// if (HasAuthority())
+	// {
+	//     EnemyHealthInitialize();
+	// }
 	
 }
 

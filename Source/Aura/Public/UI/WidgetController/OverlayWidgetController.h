@@ -70,6 +70,7 @@ public:
 	FOnLevelChangedSignature OnPlayerLevelChangedDelegate;
 	
 protected:
+
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;

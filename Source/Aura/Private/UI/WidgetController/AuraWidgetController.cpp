@@ -15,6 +15,12 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	PlayerState = WCParams.PlayerState;
 	AbilitySystemComponent = WCParams.AbilitySystemComponent;
 	AttributeSet = WCParams.AttributeSet;
+
+	UE_LOG(LogTemp, Warning, TEXT("SetWidgetControllerParams called"));
+	UE_LOG(LogTemp, Warning, TEXT("PlayerController: %s"), *PlayerController->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("PlayerState: %s"), *PlayerState->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("AbilitySystemComponent: %s"), *AbilitySystemComponent->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("AttributeSet: %s"), *AttributeSet->GetName());
 }
 
 void UAuraWidgetController::BroadcastInitialValues()
