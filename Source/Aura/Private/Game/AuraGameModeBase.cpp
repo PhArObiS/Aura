@@ -27,7 +27,7 @@ void AAuraGameModeBase::SaveSlotData(UMVVM_LoadSlot* LoadSlot, int32 SlotIndex)
 	LoadScreenSaveGame->MapName = LoadSlot->GetMapName();
 	LoadScreenSaveGame->MapAssetName = LoadSlot->MapAssetName;
 	LoadScreenSaveGame->PlayerStartTag = LoadSlot->PlayerStartTag;
-	
+
 	UGameplayStatics::SaveGameToSlot(LoadScreenSaveGame, LoadSlot->GetLoadSlotName(), SlotIndex);
 }
 
@@ -220,7 +220,7 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		}
 		return SelectedActor;
 	}
-	return nullptr;  
+	return nullptr;
 }
 
 void AAuraGameModeBase::PlayerDied(ACharacter* DeadCharacter)
@@ -236,3 +236,4 @@ void AAuraGameModeBase::BeginPlay()
 	Super::BeginPlay();
 	Maps.Add(DefaultMapName, DefaultMap);
 }
+

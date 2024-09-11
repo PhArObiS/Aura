@@ -31,7 +31,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndTask();
-
 protected:
 
 	UPROPERTY()

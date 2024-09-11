@@ -12,7 +12,6 @@ UAuraAssetManager& UAuraAssetManager::Get()
 	check(GEngine);
 	
 	UAuraAssetManager* AuraAssetManager = Cast<UAuraAssetManager>(GEngine->AssetManager);
-	check(AuraAssetManager);  // Ensure the cast was successful
 	return *AuraAssetManager;
 }
 

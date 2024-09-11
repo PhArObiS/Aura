@@ -28,122 +28,107 @@ public:
 	}
 
     // Initializes native gameplay tags.
-    static void InitializeNativeGameplayTags();
-
-    // Primary Attributes
-    FGameplayTag Attributes_Primary_Strength;
-    FGameplayTag Attributes_Primary_Intelligence;
-    FGameplayTag Attributes_Primary_Resilience;
-    FGameplayTag Attributes_Primary_Vigor;
-
-    // Secondary Attributes
-    FGameplayTag Attributes_Secondary_Armor;
-    FGameplayTag Attributes_Secondary_ArmorPenetration;
-    FGameplayTag Attributes_Secondary_BlockChance;
-    FGameplayTag Attributes_Secondary_CriticalHitChance;
-    FGameplayTag Attributes_Secondary_CriticalHitDamage;
-    FGameplayTag Attributes_Secondary_CriticalHitResistance;
-    FGameplayTag Attributes_Secondary_HealthRegeneration;
-    FGameplayTag Attributes_Secondary_ManaRegeneration;
-    FGameplayTag Attributes_Secondary_MaxHealth;
-    FGameplayTag Attributes_Secondary_MaxMana;
-
-    // Meta Attributes
-    FGameplayTag Attributes_Meta_IncomingXP;
-
-    // Input Tags
-    FGameplayTag InputTag_LMB;
-    FGameplayTag InputTag_RMB;
-    FGameplayTag InputTag_1;
-    FGameplayTag InputTag_2;
-    FGameplayTag InputTag_3;
-    FGameplayTag InputTag_4;
-    FGameplayTag InputTag_Passive_1;
-    FGameplayTag InputTag_Passive_2;  // Added correct input tag
-
-    // Damage Tags
-    FGameplayTag Damage;
-    FGameplayTag Damage_Fire;
-    FGameplayTag Damage_Lightning;
-    FGameplayTag Damage_Arcane;
-    FGameplayTag Damage_Physical;
-
-    // Debuff Tags
-    FGameplayTag Debuff_Burn;
-    FGameplayTag Debuff_Stun;
-    FGameplayTag Debuff_Arcane;
-    FGameplayTag Debuff_Physical; // Corrected typo
-
-    FGameplayTag Debuff_Chance;
-    FGameplayTag Debuff_Damage;
-    FGameplayTag Debuff_Duration;
-    FGameplayTag Debuff_Frequency;
-
-    // Resistance Attributes
-    FGameplayTag Attributes_Resistance_Fire;
-    FGameplayTag Attributes_Resistance_Lightning;
-    FGameplayTag Attributes_Resistance_Arcane;
-    FGameplayTag Attributes_Resistance_Physical;
-
-    // Ability Tags
-    FGameplayTag Abilities_None;
-    FGameplayTag Abilities_Attack;
-    FGameplayTag Abilities_Summon;
-    FGameplayTag Abilities_HitReact;
-
-    // Ability Status Tags
-    FGameplayTag Abilities_Status_Locked;
-    FGameplayTag Abilities_Status_Eligible;
-    FGameplayTag Abilities_Status_Unlocked;
-    FGameplayTag Abilities_Status_Equipped;
-
-    // Ability Type Tags
-    FGameplayTag Abilities_Type_Offensive;
-    FGameplayTag Abilities_Type_Passive;
-    FGameplayTag Abilities_Type_None;
-
-    // Specific Abilities
-    FGameplayTag Abilities_Fire_FireBolt;
-	FGameplayTag Abilities_Fire_FireBlast;
-    FGameplayTag Abilities_Lightning_Electrocute;
-	FGameplayTag Abilities_Arcane_ArcaneShards;
+	static void InitializeNativeGameplayTags();
 	
-    FGameplayTag Abilities_Passive_HaloOfProtection;
-    FGameplayTag Abilities_Passive_LifeSiphon;
-    FGameplayTag Abilities_Passive_ManaSiphon;
+	FGameplayTag Attributes_Primary_Strength;
+	FGameplayTag Attributes_Primary_Intelligence;
+	FGameplayTag Attributes_Primary_Resilience;
+	FGameplayTag Attributes_Primary_Vigor;
 
-    // Cooldown Tags
-    FGameplayTag Cooldown_Fire_FireBolt;
+	FGameplayTag Attributes_Secondary_Armor;
+	FGameplayTag Attributes_Secondary_ArmorPenetration;
+	FGameplayTag Attributes_Secondary_BlockChance;
+	FGameplayTag Attributes_Secondary_CriticalHitChance;
+	FGameplayTag Attributes_Secondary_CriticalHitDamage;
+	FGameplayTag Attributes_Secondary_CriticalHitResistance;
+	FGameplayTag Attributes_Secondary_HealthRegeneration;
+	FGameplayTag Attributes_Secondary_ManaRegeneration;
+	FGameplayTag Attributes_Secondary_MaxHealth;
+	FGameplayTag Attributes_Secondary_MaxMana;
+	
+	FGameplayTag Attributes_Meta_IncomingXP;
 
-    // Combat Socket Tags
-    FGameplayTag CombatSocket_Weapon;
-    FGameplayTag CombatSocket_RightHand;
-    FGameplayTag CombatSocket_LeftHand;
-    FGameplayTag CombatSocket_Tail;
+	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_RMB;
+	FGameplayTag InputTag_1;
+	FGameplayTag InputTag_2;
+	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_4;
+	FGameplayTag InputTag_Passive_1;
+	FGameplayTag InputTag_Passive_2;
 
-    // Montage Tags
-    FGameplayTag Montage_Attack1;
-    FGameplayTag Montage_Attack2;
-    FGameplayTag Montage_Attack3;
-    FGameplayTag Montage_Attack4;
+	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Lightning;
+	FGameplayTag Damage_Arcane;
+	FGameplayTag Damage_Physical;
 
-    // Effects
-    FGameplayTag Effects_HitReact;
+	FGameplayTag Attributes_Resistance_Fire;
+	FGameplayTag Attributes_Resistance_Lightning;
+	FGameplayTag Attributes_Resistance_Arcane;
+	FGameplayTag Attributes_Resistance_Physical;
 
-    // Player Tags
-    FGameplayTag Player_Block_InputPressed;
-    FGameplayTag Player_Block_InputHeld;
-    FGameplayTag Player_Block_InputReleased;
-    FGameplayTag Player_Block_CursorTrace;
+	FGameplayTag Debuff_Burn;
+	FGameplayTag Debuff_Stun;
+	FGameplayTag Debuff_Arcane;
+	FGameplayTag Debuff_Physical;
 
-    // Maps for Damage Types to Resistances and Debuffs
-    TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
-    TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Damage;
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequency;
+
+	FGameplayTag Abilities_None;
+	
+	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_Summon;
+	
+	FGameplayTag Abilities_HitReact;
+
+	FGameplayTag Abilities_Status_Locked;
+	FGameplayTag Abilities_Status_Eligible;
+	FGameplayTag Abilities_Status_Unlocked;
+	FGameplayTag Abilities_Status_Equipped;
+
+	FGameplayTag Abilities_Type_Offensive;
+	FGameplayTag Abilities_Type_Passive;
+	FGameplayTag Abilities_Type_None;
+	
+	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag Abilities_Fire_FireBlast;	
+	FGameplayTag Abilities_Lightning_Electrocute;
+	FGameplayTag Abilities_Arcane_ArcaneShards;
+
+
+	FGameplayTag Abilities_Passive_HaloOfProtection;
+	FGameplayTag Abilities_Passive_LifeSiphon;
+	FGameplayTag Abilities_Passive_ManaSiphon;
+
+	FGameplayTag Cooldown_Fire_FireBolt;
+
+	FGameplayTag CombatSocket_Weapon;
+	FGameplayTag CombatSocket_RightHand;
+	FGameplayTag CombatSocket_LeftHand;
+	FGameplayTag CombatSocket_Tail;
+
+	FGameplayTag Montage_Attack_1;
+	FGameplayTag Montage_Attack_2;
+	FGameplayTag Montage_Attack_3;
+	FGameplayTag Montage_Attack_4;
+	
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuffs;
+
+	FGameplayTag Effects_HitReact;
+
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_InputReleased;
+	FGameplayTag Player_Block_CursorTrace;
 
 	FGameplayTag GameplayCue_FireBlast;
 
 private:
-	// Singleton instance and initialization flag
-	static FAuraGameplayTags GameplayTags;
+    static FAuraGameplayTags GameplayTags;
 	bool bInitialized = false;
 };

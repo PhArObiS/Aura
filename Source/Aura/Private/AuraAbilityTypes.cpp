@@ -74,19 +74,20 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 16;
 
-			if (RadialDamageInnerRadius)
+			if (RadialDamageInnerRadius > 0.f)
 			{
 				RepBits |= 1 << 17;
 			}
-			if (RadialDamageOuterRadius)
+			if (RadialDamageOuterRadius > 0.f)
 			{
 				RepBits |= 1 << 18;
 			}
-			if (RadialDamageOrigin.IsZero())
+			if (!RadialDamageOrigin.IsZero())
 			{
 				RepBits |= 1 << 19;
 			}
 		}
+		
 	}
 
 	Ar.SerializeBits(&RepBits, 19);
@@ -177,7 +178,7 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 	if (RepBits & (1 << 16))
 	{
 		Ar << bIsRadialDamage;
-
+		
 		if (RepBits & (1 << 17))
 		{
 			Ar << RadialDamageInnerRadius;
@@ -192,6 +193,7 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		}
 	}
 	
+
 	if (Ar.IsLoading())
 	{
 		AddInstigator(Instigator.Get(), EffectCauser.Get()); // Just to initialize InstigatorAbilitySystemComponent

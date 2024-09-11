@@ -7,7 +7,6 @@
 #include "ScalableFloat.h"
 #include "CharacterClassInfo.generated.h"
 
-
 class UGameplayEffect;
 class UGameplayAbility;
 

@@ -1,7 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "UI/WidgetController/OverlayWidgetController.h"
-
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -19,75 +16,104 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	
 }
 
+
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	GetAuraPS()->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
-	GetAuraPS()->OnLevelChangedDelegate.AddLambda(
-		[this](int32 NewLevel, bool bLevelUp)
-		{
-			OnPlayerLevelChangedDelegate.Broadcast(NewLevel, bLevelUp);
-		}
-	);
-	
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxHealthAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxHealthChanged.Broadcast(Data.NewValue);
-			}
-		);
-
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnManaChanged.Broadcast(Data.NewValue);
-			}
-		);
-
-	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxManaAttribute()).AddLambda(
-			[this](const FOnAttributeChangeData& Data)
-			{
-				OnMaxManaChanged.Broadcast(Data.NewValue);
-			}
-		);
-
-	if (GetAuraASC())
+	// Added this to see if callbacks are happening more than once
+	UE_LOG(LogTemp, Warning, TEXT("BindCallbacksToDependencies called"));
+	if (bCallbacksBound)  // Add a flag to prevent duplicate bindings.
 	{
-		GetAuraASC()->AbilityEquipped.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
-		if (GetAuraASC()->bStartupAbilitiesGiven)
-		{
-			BroadcastAbilityInfo();
-		}
-		else
-		{
-			GetAuraASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
-		}
-
-		GetAuraASC()->EffectAssetTags.AddLambda(
-			[this](const FGameplayTagContainer& AssetTags)
-			{
-				for (const FGameplayTag& Tag : AssetTags)
-				{
-					// For example, say that Tag = Message.HealthPotion
-					// "Message.HealthPotion".MatchesTag("Message") will return True, "Message".MatchesTag("Message.HealthPotion") will return False
-					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-					if (Tag.MatchesTag(MessageTag))
-					{
-						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-						MessageWidgetRowDelegate.Broadcast(*Row);
-					}
-				}
-			}
-		);
+		UE_LOG(LogTemp, Warning, TEXT("Callbacks already bound, skipping."));
+		return;
 	}
+	bCallbacksBound = true;  // Set the flag to indicate that callbacks are bound.
+	// Ends here
 	
+    if (!GetAuraPS())
+    {
+        UE_LOG(LogTemp, Error, TEXT("AuraPlayerState is null in BindCallbacksToDependencies."));
+        return;
+    }
+
+    GetAuraPS()->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+    UE_LOG(LogTemp, Warning, TEXT("BindCallbacksToDependencies: XP Changed callback bound."));
+
+    GetAuraPS()->OnLevelChangedDelegate.AddLambda(
+        [this](int32 NewLevel, bool bLevelUp)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Level changed to: %d, Level Up: %s"), NewLevel, bLevelUp ? TEXT("true") : TEXT("false"));
+            OnPlayerLevelChangedDelegate.Broadcast(NewLevel, bLevelUp);
+        }
+    );
+
+    if (!AbilitySystemComponent)
+    {
+        UE_LOG(LogTemp, Error, TEXT("AbilitySystemComponent is null in BindCallbacksToDependencies."));
+        return;
+    }
+
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda(
+        [this](const FOnAttributeChangeData& Data)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Health changed to: %f"), Data.NewValue);
+            OnHealthChanged.Broadcast(Data.NewValue);
+        }
+    );
+
+    AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxHealthAttribute()).AddLambda(
+        [this](const FOnAttributeChangeData& Data)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Max Health changed to: %f"), Data.NewValue);
+            OnMaxHealthChanged.Broadcast(Data.NewValue);
+        }
+    );
+
+    // Logging for Ability Equipped
+    if (GetAuraASC())
+    {
+        GetAuraASC()->AbilityEquipped.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
+        UE_LOG(LogTemp, Warning, TEXT("BindCallbacksToDependencies: AbilityEquipped callback bound."));
+
+        if (GetAuraASC()->bStartupAbilitiesGiven)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Startup abilities already given."));
+            BroadcastAbilityInfo();
+        }
+        else
+        {
+            GetAuraASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
+            UE_LOG(LogTemp, Warning, TEXT("AbilitiesGivenDelegate bound."));
+        }
+
+        GetAuraASC()->EffectAssetTags.AddLambda(
+            [this](const FGameplayTagContainer& AssetTags)
+            {
+                for (const FGameplayTag& Tag : AssetTags)
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("EffectAssetTags added with Tag: %s"), *Tag.ToString());
+
+                    FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+                    if (Tag.MatchesTag(MessageTag))
+                    {
+                        const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+
+                        // Log when broadcasting the message widget row
+                        if (Row)
+                        {
+                            UE_LOG(LogTemp, Warning, TEXT("Broadcasting message widget row for Tag: %s"), *Tag.ToString());
+                            MessageWidgetRowDelegate.Broadcast(*Row);
+                        }
+                        else
+                        {
+                            UE_LOG(LogTemp, Error, TEXT("Failed to broadcast message widget row for Tag: %s"), *Tag.ToString());
+                        }
+                    }
+                }
+            }
+        );
+    }
 }
+
 
 void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 {

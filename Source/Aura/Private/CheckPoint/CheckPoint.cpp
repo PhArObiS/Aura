@@ -25,7 +25,7 @@ ACheckpoint::ACheckpoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	
+
 	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
 	MoveToComponent->SetupAttachment(GetRootComponent());
 }
@@ -67,7 +67,6 @@ void ACheckpoint::BeginPlay()
 		Sphere->OnComponentBeginOverlap.AddDynamic(this, &ACheckpoint::OnSphereOverlap);
 	}
 }
-
 
 void ACheckpoint::SetMoveToLocation_Implementation(FVector& OutDestination)
 {

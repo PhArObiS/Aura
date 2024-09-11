@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemGlobals.h"
 
-FAuraGameplayEffectContext* UAuraAbilitySystemGlobals::AllocGameplayEffectContext() const
+FGameplayEffectContext* UAuraAbilitySystemGlobals::AllocGameplayEffectContext() const
 {
 	return new FAuraGameplayEffectContext();
 }

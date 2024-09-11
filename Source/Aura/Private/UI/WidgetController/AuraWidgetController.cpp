@@ -16,27 +16,29 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	AbilitySystemComponent = WCParams.AbilitySystemComponent;
 	AttributeSet = WCParams.AttributeSet;
 
-	UE_LOG(LogTemp, Warning, TEXT("SetWidgetControllerParams called"));
-	UE_LOG(LogTemp, Warning, TEXT("PlayerController: %s"), *PlayerController->GetName());
-	UE_LOG(LogTemp, Warning, TEXT("PlayerState: %s"), *PlayerState->GetName());
-	UE_LOG(LogTemp, Warning, TEXT("AbilitySystemComponent: %s"), *AbilitySystemComponent->GetName());
-	UE_LOG(LogTemp, Warning, TEXT("AttributeSet: %s"), *AttributeSet->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("SetWidgetControllerParams called"));
+	// UE_LOG(LogTemp, Warning, TEXT("PlayerController: %s"), *PlayerController->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("PlayerState: %s"), *PlayerState->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("AbilitySystemComponent: %s"), *AbilitySystemComponent->GetName());
+	// UE_LOG(LogTemp, Warning, TEXT("AttributeSet: %s"), *AttributeSet->GetName());
 }
 
 void UAuraWidgetController::BroadcastInitialValues()
 {
+	
 }
 
 void UAuraWidgetController::BindCallbacksToDependencies()
 {
+	
 }
 
 void UAuraWidgetController::BroadcastAbilityInfo()
 {
 	if (!GetAuraASC()->bStartupAbilitiesGiven) return;
-	
+
 	FForEachAbility BroadcastDelegate;
-	BroadcastDelegate.BindLambda( [this](const FGameplayAbilitySpec& AbilitySpec)
+	BroadcastDelegate.BindLambda([this](const FGameplayAbilitySpec& AbilitySpec)
 	{
 		FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AuraAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
 		Info.InputTag = AuraAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);

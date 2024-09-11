@@ -21,7 +21,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FSetWidgetSwitcherIndex SetWidgetSwitcherIndex;
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FEnableSelectSlotButton EnableSelectSlotButton;
 
@@ -35,11 +35,14 @@ public:
 
 	UPROPERTY()
 	FName PlayerStartTag;
-	
+
 	UPROPERTY()
 	FString MapAssetName;
 	
 	/** Field Notifies */
+	
+
+
 	void SetPlayerName(FString InPlayerName);
 	void SetMapName(FString InMapName);
 	void SetPlayerLevel(int32 InLevel);
@@ -57,10 +60,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"));
 	FString MapName;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"));
 	int32 PlayerLevel;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"));
 	FString LoadSlotName;
 };

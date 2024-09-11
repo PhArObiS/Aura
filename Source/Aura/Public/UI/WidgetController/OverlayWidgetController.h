@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "OverlayWidgetController.generated.h"
 
-
+struct FAuraAbilityInfo;
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public FTableRowBase
 {
@@ -26,15 +24,13 @@ struct FUIWidgetRow : public FTableRowBase
 	UTexture2D* Image = nullptr;
 };
 
-struct FOnAttributeChangeData;
 class UAuraUserWidget;
 class UAbilityInfo;
 class UAuraAbilitySystemComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLevelChangedSignature, int32, NewLevel, bool, LevelUp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLevelChangedSignature, int32, NewLevel, bool, bLevelUp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
-
 
 /**
  * 
@@ -61,30 +57,54 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;
-	
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|XP")
 	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Level")
 	FOnLevelChangedSignature OnPlayerLevelChangedDelegate;
-	
-protected:
 
+protected:
+	bool bCallbacksBound = false; // Added this to see if callbacks are happening more than once
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
-	
+
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 
 	void OnXPChanged(int32 NewXP);
 
 	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& Slot, const FGameplayTag& PreviousSlot) const;
+
+	
 };
 
 template <typename T>
 T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
 {
-	return DataTable->FindRow<T>(Tag.GetTagName(), TEXT(""));
+	// Log the tag being searched
+	UE_LOG(LogTemp, Warning, TEXT("Searching for row with Tag: %s"), *Tag.ToString());
+
+	// Check if the DataTable is valid
+	if (!DataTable)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MessageWidgetDataTable is null."));
+		return nullptr;
+	}
+
+	// Find row in the DataTable
+	T* Row = DataTable->FindRow<T>(Tag.GetTagName(), TEXT(""));
+
+	// Log whether the row was found or not
+	if (Row)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Row found for Tag: %s"), *Tag.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No row found for Tag: %s"), *Tag.ToString());
+	}
+
+	return Row;
 }

@@ -9,12 +9,12 @@
 #include "CombatInterface.generated.h"
 
 class UAbilitySystemComponent;
-class UAnimMontage;
 class UNiagaraSystem;
+class UAnimMontage;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float /*DamageAmout*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float /*DamageAmount*/);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -26,6 +26,7 @@ struct FTaggedMontage
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag MontageTag;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag SocketTag;
 
@@ -33,13 +34,13 @@ struct FTaggedMontage
 	USoundBase* ImpactSound = nullptr;
 };
 
-
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
 };
+
 
 /**
  * 
@@ -64,7 +65,7 @@ public:
 
 	virtual void Die(const FVector& DeathImpulse) = 0;
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
-	virtual FOnDamageSignature& GetOnDamageSignature() = 0;
+	virtual FOnDamageSignature& GetOnDamageSignature() = 0; 
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;
